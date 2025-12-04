@@ -13,8 +13,6 @@ public class User {
     private Long id;
     private String email;
     private String password;
-    private String firstName;  // nytt fält
-    private String lastName;   // nytt fält
 
     @Enumerated(EnumType.STRING)
     private Role role;
@@ -44,22 +42,6 @@ public class User {
         this.password = password;
     }
 
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
     public Role getRole() {
         return role;
     }
@@ -82,15 +64,13 @@ public class User {
         return Objects.equals(id, user.id)
                 && Objects.equals(email, user.email)
                 && Objects.equals(password, user.password)
-                && Objects.equals(firstName, user.firstName)
-                && Objects.equals(lastName, user.lastName)
                 && role == user.role
                 && Objects.equals(lastLogin, user.lastLogin);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, email, password, firstName, lastName, role, lastLogin);
+        return Objects.hash(id, email, password, role, lastLogin);
     }
 
     @Override
@@ -98,8 +78,6 @@ public class User {
         return "User{" +
                 "id=" + id +
                 ", email='" + email + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
                 ", password='" + password + '\'' +
                 ", role=" + role +
                 ", lastLogin=" + lastLogin +

@@ -1,7 +1,5 @@
 package com.userservice.controller;
 
-import com.userservice.dto.LoginRequest;
-import com.userservice.dto.LoginResponse;
 import com.userservice.dto.RegisterRequest;
 import com.userservice.dto.RegisterResponse;
 import com.userservice.entity.User;
@@ -9,6 +7,8 @@ import com.userservice.repository.UserRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @CrossOrigin(origins = {"http://localhost:5173", "http://localhost:3001"})
@@ -45,36 +45,15 @@ public class UserController {
         u.setPassword(r.password());
         userRepo.save(u);
 
-        Long patientId = null, practitionerId = null;
-
-        // 2) Create domain profile
-        switch (r.role()) {
-            case PATIENT -> {
-                var p = new Patient(r.firstName(), r.lastName());
-                p.setUser(u);
-                patientRepo.save(p);
-                patientId = p.getId();
-            }
-            case DOCTOR, STAFF -> {
-                var pr = new Practitioner();
-                pr.setFirstName(r.firstName());
-                pr.setLastName(r.lastName());
-                pr.setRole(r.role());
-                pr.setUser(u);
-                practitionerRepo.save(pr);
-                practitionerId = pr.getId();
-            }
-        }
-
-        return ResponseEntity.ok(new RegisterResponse(
-                u.getId(),
-                patientId,
-                practitionerId,
-                r.role()
-        ));
+        return ResponseEntity.ok(
+                Map.of(
+                        "id", u.getId(),
+                        "role", u.getRole()  // or u.getRole().name()
+                )
+        );
     }
 
-    @PostMapping("/login")
+    /*@PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest req) {
         var userOpt = userRepo.findByEmail(req.email());
         if (userOpt.isEmpty())
@@ -91,5 +70,5 @@ public class UserController {
                 user.getEmail(),
                 user.getRole()
         ));
-    }
+    }*/
 }
