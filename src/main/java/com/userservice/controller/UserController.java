@@ -1,5 +1,6 @@
 package com.userservice.controller;
 
+import com.userservice.dto.LoginRequest;
 import com.userservice.dto.RegisterRequest;
 import com.userservice.dto.RegisterResponse;
 import com.userservice.entity.User;
@@ -53,22 +54,24 @@ public class UserController {
         );
     }
 
-    /*@PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest req) {
+    @PostMapping("/login")
+    public ResponseEntity<User> login(@RequestBody LoginRequest req) {
         var userOpt = userRepo.findByEmail(req.email());
-        if (userOpt.isEmpty())
-            return ResponseEntity.status(401).body("Invalid credentials");
+
+        // user not found
+        if (userOpt.isEmpty()) {
+            // 401 with NO body (type is still ResponseEntity<User>)
+            return ResponseEntity.status(401).build();
+        }
 
         var user = userOpt.get();
 
-        // PLAIN TEXT compare (no hashing)
-        if (!req.password().equals(user.getPassword()))
-            return ResponseEntity.status(401).body("Invalid credentials");
+        // wrong password
+        if (!req.password().equals(user.getPassword())) {
+            return ResponseEntity.status(401).build();
+        }
 
-        return ResponseEntity.ok(new LoginResponse(
-                user.getId(),
-                user.getEmail(),
-                user.getRole()
-        ));
-    }*/
+        // success -> return the User entity
+        return ResponseEntity.ok(user);
+    }
 }
